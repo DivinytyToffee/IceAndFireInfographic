@@ -110,10 +110,3 @@ class Point:
     @property
     def collections(self):
         return self.__collections_list
-
-
-if __name__ == '__main__':
-    p = Point()
-    p.run()
-    for x in p.collections:
-        print(x.get(2))
