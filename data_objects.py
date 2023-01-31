@@ -1,4 +1,4 @@
-from collections.abc import Iterable
+from utils import parse_url_elem
 
 
 class BaseObject:
@@ -20,13 +20,9 @@ class BaseObject:
         for link_name in self._links_list:
             if self.__dict__[link_name]:
                 if isinstance(self.__dict__[link_name], list):
-                    self.__dict__.update({link_name: list(self.__url_to_id(x) for x in self.__dict__[link_name])})
+                    self.__dict__.update({link_name: list(int(parse_url_elem(x)) for x in self.__dict__[link_name])})
                 elif isinstance(self.__dict__[link_name], str):
-                    self.__dict__.update({link_name: self.__url_to_id(self.__dict__[link_name])})
-
-    @staticmethod
-    def __url_to_id(url: str):
-        return int(url.split('/')[-1])
+                    self.__dict__.update({link_name: int(parse_url_elem(self.__dict__[link_name]))})
 
 
 class BaseCollection:
@@ -42,7 +38,7 @@ class BaseCollection:
     def __feel(self, data):
         for elm in data:
             obj = self._obj(elm)
-            id_ = int(obj.url.split('/')[-1])
+            id_ = int(parse_url_elem(obj.url))
             self.__storage.update({id_: obj})
 
     @property
