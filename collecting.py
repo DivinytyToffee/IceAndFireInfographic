@@ -9,7 +9,7 @@ from data_objects import CharactersCollection, BooksCollection, HousesCollection
 from utils import parse_url_elem
 
 
-class URLs(Enum):
+class URLs(str, Enum):
     characters = 'https://www.anapioficeandfire.com/api/characters'
     books = 'https://www.anapioficeandfire.com/api/books'
     houses = 'https://www.anapioficeandfire.com/api/houses'
@@ -56,7 +56,7 @@ class DataLoader:
                 if len(response_data) == 0:
                     break
                 self.__list_data.extend(response_data)
-        print(f'{parse_url_elem(self.__url.value, -2)} - DONE')
+        print(f'{parse_url_elem(self.__url, -2)} - DONE')
 
     @property
     def data(self):
