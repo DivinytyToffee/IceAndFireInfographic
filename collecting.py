@@ -70,7 +70,7 @@ class Point:
         self.__raw_data = {}
         self.__urls = URLs
         self.__collections = Collections
-        self.__collections_list = []
+        self.__collections_list = {}
         self.__current_dir = os.getcwd()
 
     def __load_from_web(self):
@@ -86,7 +86,11 @@ class Point:
         for collection in self.__collections:
             path = os.path.join(self.__current_dir, f'{collection.name}.json')
             with open(path, 'r') as file:
-                self.__collections_list.append(collection.value(json.loads(file.read())))
+                self.__collections_list.update({
+                    collection.name: collection.value(
+                        json.loads(file.read())
+                    )
+                })
 
     def __save_in_json(self):
         for k, v in self.__raw_data.items():
@@ -97,7 +101,9 @@ class Point:
 
     def __make_objects(self):
         for k, v in self.__raw_data.items():
-            self.__collections_list.append(self.__collections[k].value(v.data))
+            self.__collections_list.update({
+                k: self.__collections[k].value(v.data)
+            })
 
     def run(self, load_from_json: bool = False):
         if load_from_json:
