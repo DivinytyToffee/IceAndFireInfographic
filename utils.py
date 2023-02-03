@@ -12,12 +12,12 @@ def parse_url_elem(url: str, position: int = -1):
 
 def barplot(x_data, y_data, title=""):
     _, ax = plt.subplots()
-    ax.bar(x_data[0], y_data[0][0], color='#539caf', align='center', width=0.4, label=f'{x_data[0]} characters')
-    ax.bar(x_data[1], y_data[0][1], color='#530caf', align='center', width=0.4, label=f'{x_data[1]} characters')
-    ax.bar(x_data[0], y_data[1][0], color='#000', align='center', width=0.3, label=f'{x_data[0]} died characters')
-    ax.bar(x_data[1], y_data[1][1], color='#050', align='center', width=0.3, label=f'{x_data[1]} died characters')
 
-    ind = np.arange(2)
+    for x, y in zip(x_data, y_data):
+        ax.bar(x, y[0], color='b', align='center', width=0.4, label=f'{x} characters')
+        ax.bar(x, y[1], color='r', align='center', width=0.4, label=f'{x} died characters')
+
+    ind = np.arange(len(x_data))
 
     plt.xticks(ind, x_data)
 
@@ -27,15 +27,10 @@ def barplot(x_data, y_data, title=""):
     ax.legend()
 
 
-def gender_died_counter(collection, char):
-    collection[char.gender] += 1
+def died_counter(collection, char, attr):
+    collection[getattr(char, attr)] += 1
     if char.died:
-        collection[f'{char.gender}_died'] += 1
-
-
-def prepare_bar_plot_data(collection):
-    return (collection.get('Female'), collection.get('Male')), \
-           (collection.get('Female_died'), collection.get('Male_died'))
+        collection[f'{getattr(char, attr)}_died'] += 1
 
 
 def is_born_after_year_ac(collection, char, year=170):
@@ -52,7 +47,7 @@ def is_born_after_year_ac(collection, char, year=170):
 
     born_year = min(int(s) for s in re.findall(r'\d+', char.born))
     if born_year > year:
-        gender_died_counter(collection, char)
+        died_counter(collection, char, 'gender')
 
 
 def pov_characters(collection, char):
@@ -64,12 +59,25 @@ def pov_characters(collection, char):
     :return:
     """
     if char.povBooks:
-        gender_died_counter(collection, char)
+        died_counter(collection, char, 'gender')
 
 
-def make_gender_died_ratio_plot(collection, title, file_name):
-    data = prepare_bar_plot_data(collection)
-    barplot(['Female', 'Male'], data, title=title)
+def prepare_bar_plot_data(collection, key_set):
+    data = []
+    fields = []
+    for key in key_set:
+        if key == '' or key is None:
+            collection['Unknown'] = collection.pop(key)
+            key = 'Unknown'
+        fields.append(key)
+        data.append([collection[key], collection[f'{key}_died']])
+
+    return fields, data
+
+
+def make_bar_plot(collection, key_set, title, file_name):
+    fields, data = prepare_bar_plot_data(collection, key_set)
+    barplot(fields, data, title=title)
 
     cur_dir = os.getcwd()
     images = Path(os.path.join(cur_dir, 'images'))
