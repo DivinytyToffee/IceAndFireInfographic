@@ -33,6 +33,7 @@ if __name__ == '__main__':
         file_name='culture_dead_1_1',
         x_label='Culture',
         y_label='Count',
+        skip_unknown=True
     )
 
     make_bar_plot(

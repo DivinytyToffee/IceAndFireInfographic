@@ -11,20 +11,21 @@ def parse_url_elem(url: str, position: int = -1):
 
 
 def barplot(x_data, y_data, title="", x_label="", y_label=""):
-    _, ax = plt.subplots()
+    px = 1 / plt.rcParams['figure.dpi']  # pixel in inches
+    _, ax = plt.subplots(figsize=(1600 * px, 1000 * px))
 
     for x, y in zip(x_data, y_data):
-        ax.bar(x, y[0], color='b', align='center', width=0.4, label=f'{x} characters')
-        ax.bar(x, y[1], color='r', align='center', width=0.4, label=f'{x} died characters')
+        ax.bar(x, y[0], color='b', align='center', width=0.4)
+        ax.bar(x, y[1], color='r', align='center', width=0.4)
 
     ind = np.arange(len(x_data))
 
-    plt.xticks(ind, x_data)
+    plt.xticks(ind, x_data, rotation=90)
 
     ax.set_xlabel(x_label)
     ax.set_ylabel(y_label)
     ax.set_title(title)
-    ax.legend()
+    ax.legend(['All characters', 'Deid characters'])
 
 
 def died_counter(collection, char, attr):
@@ -62,11 +63,13 @@ def pov_characters(collection, char):
         died_counter(collection, char, 'gender')
 
 
-def prepare_bar_plot_data(collection, key_set):
+def prepare_bar_plot_data(collection, key_set, skip_unknown=False):
     data = []
     fields = []
     for key in key_set:
         if key == '' or key is None:
+            if skip_unknown:
+                continue
             collection['Unknown'] = collection.pop(key)
             key = 'Unknown'
         fields.append(key)
@@ -75,11 +78,11 @@ def prepare_bar_plot_data(collection, key_set):
     return fields, data
 
 
-def make_bar_plot(collection, key_set, title, x_label, y_label, file_name):
-    fields, data = prepare_bar_plot_data(collection, key_set)
+def make_bar_plot(collection, key_set, title, x_label, y_label, file_name, skip_unknown=False):
+    fields, data = prepare_bar_plot_data(collection, key_set, skip_unknown)
     barplot(fields, data, title=title, x_label=x_label, y_label=y_label)
 
     cur_dir = os.getcwd()
     images = Path(os.path.join(cur_dir, 'images'))
     images.mkdir(parents=True, exist_ok=True)
-    plt.savefig(os.path.join(images, f'{file_name}.png'))
+    plt.savefig(os.path.join(images, f'{file_name}.png'), dpi=200)
