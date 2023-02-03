@@ -1,46 +1,45 @@
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.colors as mcolors
+import os
+from collections import defaultdict
+from pathlib import Path
 
+import matplotlib.pyplot as plt
 
 from collecting import Point
+from utils import barplot, gender_died_counter, prepare_bar_plot_data, is_born_after_year_ac, pov_characters
 
 
-def barplot(x_data, y_data, error_data, x_label="", y_label="", title=""):
-    _, ax = plt.subplots()
-    # Draw bars, position them in the center of the tick mark on the x-axis
-    ax.bar(x_data[0], y_data[0], color = '#539caf', align = 'center')
-    ax.bar(x_data[1], y_data[1], color = '#000', align = 'edge')
-    # Draw error bars to show standard deviation, set ls to 'none'
-    # to remove line betwee1n points
-    # ax.errorbar(x_data,y_data, yerr = error_data, color = '#297083', ls = 'none', lw = 2, capthick = 2)
-    ax.set_ylabel(y_label)
-    ax.set_xlabel(x_label)
-    ax.set_title(title)
+def make_gender_died_ratio_plot(collection, title, file_name):
+    data = prepare_bar_plot_data(collection)
+    barplot(['Female', 'Male'], data, title=title)
+
+    cur_dir = os.getcwd()
+    images = Path(os.path.join(cur_dir, 'images'))
+    images.mkdir(parents=True, exist_ok=True)
+    plt.savefig(os.path.join(images, f'{file_name}.png'))
 
 
 if __name__ == '__main__':
     p = Point()
     p.run(True)
+
     characters = p.collections.get('characters')
-    genders = set()
-    genders_count = {}
-    female = 0
-    female_died = 0
-    male = 0
-    male_died = 0
+
+    all_chars = defaultdict(int)
+    born_after_170_ac = defaultdict(int)
+    pov_char = defaultdict(int)
+
     for x in characters.storage.values():
-        if x.gender == 'Female':
-            female += 1
-            if x.died:
-                female_died += 1
-        elif x.gender == 'Male':
-            male += 1
-            if x.died:
-                male_died += 1
+        gender_died_counter(all_chars, x)
+        is_born_after_year_ac(born_after_170_ac, x)
+        pov_characters(pov_char, x)
 
-    print(f"Female - {female}({female_died} - dead), Male - {male}({male_died} - dead)")
+    make_gender_died_ratio_plot(all_chars, title='The ratio of the number of characters by \n'
+                                                 ' gender and the ratio of their deaths', file_name='deid_alive')
+    make_gender_died_ratio_plot(pov_char, title='The ratio of the number of pov characters by \n'
+                                                ' gender and the ratio of their deaths', file_name='deid_alive_pov')
+    make_gender_died_ratio_plot(born_after_170_ac, title='The ratio of the number of characters by \n'
+                                                         ' gender and the ratio of their deaths',
+                                file_name='deid_alive_after_170')
 
-    barplot([['Female', 'Male'], ['Died Female', 'Died Male']], [[female, male], [female_died, male_died]], 1)
+    data = prepare_bar_plot_data(born_after_170_ac)
 
-    plt.show()
