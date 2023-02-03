@@ -1,4 +1,6 @@
+import os
 import re
+from pathlib import Path
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -63,3 +65,13 @@ def pov_characters(collection, char):
     """
     if char.povBooks:
         gender_died_counter(collection, char)
+
+
+def make_gender_died_ratio_plot(collection, title, file_name):
+    data = prepare_bar_plot_data(collection)
+    barplot(['Female', 'Male'], data, title=title)
+
+    cur_dir = os.getcwd()
+    images = Path(os.path.join(cur_dir, 'images'))
+    images.mkdir(parents=True, exist_ok=True)
+    plt.savefig(os.path.join(images, f'{file_name}.png'))

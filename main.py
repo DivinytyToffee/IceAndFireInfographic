@@ -1,22 +1,8 @@
-import os
 from collections import defaultdict
-from pathlib import Path
-
-import matplotlib.pyplot as plt
 
 from collecting import Point
-from utils import barplot, gender_died_counter, prepare_bar_plot_data, is_born_after_year_ac, pov_characters
-
-
-def make_gender_died_ratio_plot(collection, title, file_name):
-    data = prepare_bar_plot_data(collection)
-    barplot(['Female', 'Male'], data, title=title)
-
-    cur_dir = os.getcwd()
-    images = Path(os.path.join(cur_dir, 'images'))
-    images.mkdir(parents=True, exist_ok=True)
-    plt.savefig(os.path.join(images, f'{file_name}.png'))
-
+from utils import gender_died_counter, is_born_after_year_ac, pov_characters, \
+    make_gender_died_ratio_plot
 
 if __name__ == '__main__':
     p = Point()
@@ -40,6 +26,3 @@ if __name__ == '__main__':
     make_gender_died_ratio_plot(born_after_170_ac, title='The ratio of the number of characters by \n'
                                                          ' gender and the ratio of their deaths',
                                 file_name='deid_alive_after_170')
-
-    data = prepare_bar_plot_data(born_after_170_ac)
-
