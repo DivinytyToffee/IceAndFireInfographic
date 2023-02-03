@@ -10,7 +10,7 @@ def parse_url_elem(url: str, position: int = -1):
     return url.split('/')[position]
 
 
-def barplot(x_data, y_data, title=""):
+def barplot(x_data, y_data, title="", x_label="", y_label=""):
     _, ax = plt.subplots()
 
     for x, y in zip(x_data, y_data):
@@ -21,8 +21,8 @@ def barplot(x_data, y_data, title=""):
 
     plt.xticks(ind, x_data)
 
-    ax.set_xlabel('Gender')
-    ax.set_ylabel('Count')
+    ax.set_xlabel(x_label)
+    ax.set_ylabel(y_label)
     ax.set_title(title)
     ax.legend()
 
@@ -75,9 +75,9 @@ def prepare_bar_plot_data(collection, key_set):
     return fields, data
 
 
-def make_bar_plot(collection, key_set, title, file_name):
+def make_bar_plot(collection, key_set, title, x_label, y_label, file_name):
     fields, data = prepare_bar_plot_data(collection, key_set)
-    barplot(fields, data, title=title)
+    barplot(fields, data, title=title, x_label=x_label, y_label=y_label)
 
     cur_dir = os.getcwd()
     images = Path(os.path.join(cur_dir, 'images'))

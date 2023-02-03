@@ -26,12 +26,39 @@ if __name__ == '__main__':
         culture_set.append(x.culture)
         gender_set.append(x.gender)
 
-    make_bar_plot(culture_char, set(culture_set), 'culture_dead', 'culture_dead_1_1')
+    make_bar_plot(
+        culture_char,
+        set(culture_set),
+        title='culture_dead',
+        file_name='culture_dead_1_1',
+        x_label='Culture',
+        y_label='Count',
+    )
 
-    make_bar_plot(all_chars, set(gender_set), title='The ratio of the number of characters by \n'
-                                                    ' gender and the ratio of their deaths', file_name='deid_alive')
-    make_bar_plot(pov_char, set(gender_set), title='The ratio of the number of pov characters by \n'
-                                                   ' gender and the ratio of their deaths', file_name='deid_alive_pov')
-    make_bar_plot(born_after_170_ac, set(gender_set), title='The ratio of the number of characters by \n'
-                                                            ' gender and the ratio of their deaths',
-                  file_name='deid_alive_after_170')
+    make_bar_plot(
+        all_chars,
+        set(gender_set),
+        title='The ratio of the number of characters by \n'
+              ' gender and the ratio of their deaths',
+        file_name='deid_alive',
+        x_label='Gender',
+        y_label='Count',
+    )
+    make_bar_plot(
+        pov_char,
+        set(gender_set),
+        title='The ratio of the number of pov characters by \n'
+              ' gender and the ratio of their deaths',
+        file_name='deid_alive_pov',
+        x_label='Gender',
+        y_label='Count',
+    )
+    make_bar_plot(
+        born_after_170_ac,
+        set(gender_set),
+        title='The ratio of the number of characters by \n'
+              ' gender and the ratio of their deaths',
+        file_name='deid_alive_after_170',
+        x_label='Gender',
+        y_label='Count'
+    )
