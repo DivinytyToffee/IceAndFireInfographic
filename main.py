@@ -6,7 +6,7 @@ from utils import all_and_died_counter, is_born_after_year_ac, pov_characters, \
 
 if __name__ == '__main__':
     cl = CollectionsLoader()
-    cl.run(True)
+    cl.run(load_from_json=False)
 
     characters = cl.collections.get('characters')
     houses = cl.collections.get('houses')
