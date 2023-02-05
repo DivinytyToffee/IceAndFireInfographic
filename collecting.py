@@ -40,7 +40,6 @@ class DataLoader:
     async def __call_url(self, session: aiohttp.ClientSession, page: int):
         url = f'{self.__url}?pageSize={self.__page_size}&page={page}'
         async with session.get(url) as response:
-            print(f'Response for {url}')
             text = await response.text()
 
         data = json.loads(text)
@@ -51,19 +50,18 @@ class DataLoader:
             page = 0
             while True:
                 page += 1
-                print(f'Page number {page}')
+                print(f'Load {parse_url_elem(self.__url, position=-1)} page #{page}')
                 response_data = await self.__call_url(session, page=page)
                 if len(response_data) == 0:
                     break
                 self.__list_data.extend(response_data)
-        print(f'{parse_url_elem(self.__url, -2)} - DONE')
 
     @property
     def data(self):
         return self.__list_data
 
 
-class Point:
+class CollectionsLoader:
 
     def __init__(self):
         self.__data_loaders = DataLoader
